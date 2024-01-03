@@ -1,4 +1,6 @@
 // Creating Sessions for the End User and Agent
+
+
 describe('Creating Sessions', () => {
 
 // Creating Sessions for the End User and Agent
@@ -18,7 +20,7 @@ describe('Ticket Creation From Home Tab', () => {
     cy.VisitSlack();
     cy.NavigateToAssistAiInSlack();
     cy.ClickHomeTabInSlack();
-    cy.get(':nth-child(2) > [data-qa="bk_button-element"] > [data-qa="bk-plain_text_element"] > [dir="auto"]').click()
+    cy.ClickCreateTicketOnHome();
     cy.TicketCreationForm();
     cy.ClickMessageTabInSlack();
     cy.FetchLastTicketFromUser();
@@ -43,11 +45,10 @@ describe('Ticket Creation From Home Tab', () => {
 
 // Asserting the Ticket ID from the Agent in the Servicedesk
   it('Asserting the Ticket ID on the Servicedesk', () => { 
-    cy.readFile('cypress/downloads/output.json').then((jsonData) => {
+    cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
       let TicketIDFromAgent = jsonData.SD_TicketIDFromAgent
       TicketIDFromAgent = TicketIDFromAgent
       let TicketIDFromAgent_JsonName = "HomeCreation_TicketIDInSD"
-
       cy.FetchTicketOnSD(TicketIDFromAgent,TicketIDFromAgent_JsonName);
     })
     
@@ -99,7 +100,7 @@ describe('Ticket Creation for the Onbehalf of Requester', () => {
 // Asserting the Ticket ID from the Agent in ServiceDesk
   it('Asserting the Ticket ID on the Servicedesk', () => {
     
-    cy.readFile('cypress/downloads/output.json').then((jsonData) => {
+    cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
       let TicketIDFromAgent = jsonData.SD_TicketCreatedOnbehalf_Agent
       let TicketIDFromAgent_JsonName = "OnBehalfOf_TicketIDInSD"
       cy.FetchTicketOnSD(TicketIDFromAgent,TicketIDFromAgent_JsonName);

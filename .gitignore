@@ -1,1 +1,7 @@
-node_modules
+node_modules/
+downloads/
+screenshots/
+
+.as-a.ini
+package-lock.json
+package.json

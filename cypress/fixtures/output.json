@@ -1,0 +1,11 @@
+{
+  "HD_TicketIDFromUser": "#REG00000196",
+  "HD_TicketIDFromAgent": "#REG00000196",
+  "TicketMessage": "A user was assigned to ticket #REG00000196 successfully",
+  "SD_TicketIDFromUser": "#INC00000302",
+  "SD_TicketIDFromAgent": "#INC00000302",
+  "HomeCreation_TicketIDInSD": "#INC00000302",
+  "SD_TicketCreatedOnbehalf_Agent": "#INC00000303",
+  "SD_TicketCreatedOnbehalf_User": "#INC00000303",
+  "OnBehalfOf_TicketIDInSD": "#INC00000303"
+}
