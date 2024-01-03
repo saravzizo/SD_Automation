@@ -1,8 +1,0 @@
-{
-  "SD_TicketIDFromUser": "#INC00000177",
-  "SD_TicketIDFromAgent": "#INC00000175",
-  "HomeCreation_TicketIDInSD": "#INC00000175",
-  "SD_TicketCreatedOnbehalf_User": "#INC00000176",
-  "SD_TicketCreatedOnbehalf_Agent": "#INC00000176",
-  "OnBehalfOf_TicketIDInSD": "#INC00000176"
-}
