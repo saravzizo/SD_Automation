@@ -1,0 +1,13 @@
+{
+  "HD_TicketIDFromUser": "#REG00000236",
+  "HD_TicketIDFromAgent": "#REG00000236",
+  "AssigneeSuccessMessage": "A user was assigned to ticket #REG00000236 successfully",
+  "CategorySuccessMessage": "Ticket #REG00000236's category was changed successfully",
+  "SD_TicketIDFromUser": "#INC00000312",
+  "SD_TicketIDFromAgent": "#INC00000312",
+  "HomeCreation_TicketIDInSD": "#INC00000312",
+  "SD_TicketCreatedOnbehalf_Agent": "#INC00000313",
+  "SD_TicketCreatedOnbehalf_User": "#INC00000313",
+  "OnBehalfOf_TicketIDInSD": "#INC00000313",
+  "TicketMessage_ToValidateAssignee": "nostrum"
+}

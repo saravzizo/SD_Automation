@@ -1,1 +1,6 @@
-node_modules
+node_modules/
+downloads/
+screenshots/
+
+.as-a.ini
+fixtures/output.json

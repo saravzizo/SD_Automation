@@ -4,263 +4,291 @@ import { faker } from '@faker-js/faker'
 const ticketTitle = faker.lorem.word(3)
 const Team = "IT"
 const text = faker.lorem.word(10)
-const ticketMessage = faker.lorem.words(8)
+const ticketMessage = faker.lorem.words(1)
 
 
-const UserMessageToAgent = `Please create a ticket on behalf ${faker.lorem.words(2)}`
+const UserMessageToAgent = faker.lorem.words(1)
 const AgentMessageToUser = "Ticket has been created on behalf of you"
+
+const CategoryNameOnHD = "regression"
+
+
+
 
 // Commands for Login
 Cypress.Commands.add('SlackAgent', (email, password) => {
 
-    cy.session("Logging in as Agent in the Slack", () => {
-        cy.visit('https://supporthiveworkspace.slack.com/sign_in_with_password?redir=%2Fssb%2Fredirect%3Fentry_point%3Dsignin')
-        cy.get('[data-qa="login_email"]').type(email)
-        cy.get('[data-qa="login_password"]').type(password)
-        cy.get('[data-qa="signin_button"]').click()
-        cy.wait(30000)
-    })
-
-}
-)
-
-Cypress.Commands.add('SlackEndUser', (email, password) => {
-
-    cy.session('Logging in as user in the Slack', () => {
-        cy.visit('https://supporthiveworkspace.slack.com/sign_in_with_password?redir=%2Fssb%2Fredirect%3Fentry_point%3Dsignin')
-        cy.get('[data-qa="login_email"]').type(email)
-        cy.get('[data-qa="login_password"]').type(password)
-        cy.get('[data-qa="signin_button"]').click()
-        cy.wait(30000)
-
-    })
-
-}
-)
-
-Cypress.Commands.add('SDAgent', (email, password) => {
-    cy.session("Logging in as Agent in the SD", () => {
-
-        cy.visit('https://saravanansd.supporthive.com/staff/login/')
-        cy.get('#username').type(email)
-        cy.get('#password').type(password)
-        cy.get('#btn-submit').click()
-        cy.wait(10000)
-    }
-    )
+  cy.session("Logging in as Agent in the Slack", () => {
+    cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
+    cy.get('[data-qa="login_email"]').type(email)
+    cy.get('[data-qa="login_password"]').type(password)
+    cy.get('[data-qa="signin_button"]').click()
+  })
 })
 
-Cypress.Commands.add('SlackLogins', (email, password) => {
-    // Creating Sessions in Slack
-    cy.fixture('LoginCredentials').then((LoginCredentials) => {
-        cy.SlackEndUser(LoginCredentials.Enduser_slack_email, LoginCredentials.Enduser_slack_password)
-        cy.SlackAgent(LoginCredentials.Agent_slack_email, LoginCredentials.Agent_slack_password)
-      })
+Cypress.Commands.add('SlackEndUser', (email, password) => {
+  cy.session('Logging in as user in the Slack', () => {
+    cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
+    cy.get('[data-qa="login_email"]').type(email)
+    cy.get('[data-qa="login_password"]').type(password)
+    cy.get('[data-qa="signin_button"]').click()
+  })
+})
+
+Cypress.Commands.add('SDAgent', (email, password) => {
+  cy.session("Logging in as Agent in the SD", () => {
+
+    cy.visit(Cypress.env('SD_LINK'))
+    cy.get('#username').type(email)
+    cy.get('#password').type(password)
+    cy.get('#btn-submit').click()
+    cy.url().should('eq', Cypress.env('SD_LINK'))
+    cy.wait(5000)
+
+  }
+  )
+})
+
+Cypress.Commands.add('SlackLogins', () => {
+  // Creating Sessions in Slack
+  cy.SlackEndUser(Cypress.env('ENDUSER_SLACK_EMAIL'), Cypress.env('ENDUSER_SLACK_PASSWORD'))
+  cy.SlackAgent(Cypress.env('AGENT_SLACK_EMAIL'), Cypress.env('AGENT_SLACK_PASSWORD'))
 })
 
 Cypress.Commands.add('SDAgentLogin', () => {
-
-    // Creating Sessions in servicedesk
-    cy.fixture('LoginCredentials').then((LoginCredentials) => {
-        cy.SDAgent(LoginCredentials.Agent_SD_email, LoginCredentials.Agent_SD_password)
-    });
+  // Creating Sessions in servicedesk
+  cy.SDAgent(Cypress.env('AGENT_SD_EMAIL'), Cypress.env('AGENT_SD_PASSWORD'))
 })
+
+
 
 
 
 // Commands for Navigation
+
+Cypress.Commands.add('ScrollEnd', () => {
+  cy.get('[data-qa="message_content"]').last().scrollIntoView();
+});
+
 Cypress.Commands.add('VisitSlack', () => {
-    cy.visit("https://supporthiveworkspace.slack.com/")
+  cy.visit(Cypress.env('SLACK_VISIT_URL'))
 })
 
 Cypress.Commands.add('NavigateToAssistAiInSlack', () => {
-    cy.get('[data-qa="channel_sidebar_name_assist-ai-(staging)"]').click()  
+  cy.get('[data-qa="channel_sidebar_name_assist-ai-(staging)"]').click()
 })
 
 Cypress.Commands.add('ClickHomeTabInSlack', () => {
 
-    cy.get('[data-qa="home"] > .c-tabs__tab_content').click() 
+  cy.get('[data-qa="home"] > .c-tabs__tab_content').click()
 })
 
 Cypress.Commands.add('ClickMessageTabInSlack', () => {
-    cy.get('[data-qa="messages"] > .c-tabs__tab_content > span').click()
+  cy.get('[data-qa="messages"] > .c-tabs__tab_content > span').click()
 })
+
+Cypress.Commands.add('ClickCreateTicketOnHome', () => {
+  cy.get(':nth-child(2) > [data-qa="bk_button-element"]').click();
+})
+
+Cypress.Commands.add('SendMessageToAssistAI', () => {
+  cy.get('.ql-editor > p').type(ticketMessage + '{enter}')
+})
+
+
+
 
 
 
 // Commands for Ticket Creation
 Cypress.Commands.add('TicketCreationForm', () => {
-
-    cy.get('[data-qa="user-new-request_field-team-input"]').type(Team)
-    cy.get('.p-block-kit-select_options').click();
-    cy.wait(1000)
-    cy.get('#user-new-request_field-7-user-new-request_field-7').type(text)
-    cy.get('#user-new-request_field-subject-user-new-request_field-subject').type(ticketTitle)
-    cy.get('[data-qa="user-new-request_field-message-user-new-request_field-message"]').type(ticketMessage)
-    cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
+  cy.get('[data-qa="user-new-request_field-team-input"]').type(Team)
+  cy.wait(1000)
+  cy.get('.p-block-kit-select_options').click();
+  cy.wait(1000)
+  cy.get('#user-new-request_field-7-user-new-request_field-7').type(text)
+  cy.get('#user-new-request_field-subject-user-new-request_field-subject').type(ticketTitle)
+  cy.get('[data-qa="user-new-request_field-message-user-new-request_field-message"]').type(ticketMessage)
+  cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 
 })
 
 Cypress.Commands.add('TicektCreationFormOnbehalf', () => {
-
-    cy.get('[data-qa="new-ticket-form_field-team-input"]').type(Team)
-    cy.get('.p-block-kit-select_options').click();
-    cy.get('#new-ticket-form_field-7-new-ticket-form_field-7').type(text)
-    cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
-    cy.wait(5000)
-    
-
+  cy.get('[data-qa="new-ticket-form_field-team-input"]').type(Team)
+  cy.wait(1000)
+  cy.get('.p-block-kit-select_options').click();
+  cy.wait(1000)
+  cy.get('#new-ticket-form_field-7-new-ticket-form_field-7').type(text)
+  cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 })
+
+Cypress.Commands.add('CreateTicketOnAIHome', () => {
+  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > .p-autoclog__hook > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > :nth-child(2) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
+    .last()
+    .click()
+  cy.get('[data-qa="new-ticket-form_field-category-input"]').type(CategoryNameOnHD)
+  cy.get('.p-block-kit-select_options').click();
+  cy.get('[data-qa="wizard_modal_next"]').click();
+  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+    jsonData.TicketMessage_ToValidateAssignee = ticketMessage
+    cy.writeFile('cypress/fixtures/output.json', jsonData);
+  })
+})
+
 
 
 
 // Onbehalf Ticket Creation
 Cypress.Commands.add('SendMsgToAgentFromUser', () => {
-    cy.get('[data-qa="channel_sidebar_name_saravanan.s"] > span').click()
-    cy.get('.ql-editor > p').type(UserMessageToAgent)
-    cy.get('.c-wysiwyg_container__send_button--with_options').click()
+  cy.get('[data-qa="channel_sidebar_name_saravanan.s"] > span').click()
+  cy.get('.ql-editor > p').type(UserMessageToAgent)
+  cy.get('.c-wysiwyg_container__send_button--with_options').click()
 })
 
 Cypress.Commands.add('SendMsgToUserFromAgent', () => {
-    cy.get('.ql-editor > p').type(AgentMessageToUser)
-    cy.get('[data-qa="texty_send_button"]').click()
+  cy.get('.ql-editor > p').type(AgentMessageToUser)
+  cy.get('[data-qa="texty_send_button"]').click()
 
 })
 
 Cypress.Commands.add('NaviagateToUserProfile', () => {
 
-    cy.get('[data-qa="channel_sidebar_name_end-user"] > span').click()
+  cy.contains('END USER').click()
 
 })
 
 Cypress.Commands.add('NavigateToTicketFormUserMsg', () => {
 
-    cy.get(' [data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper > .p-rich_text_block > .p-rich_text_section')
-      .as('Message')
-
-      .filter(
-        function (index, element) {
-          return Cypress.$(element).text().includes(UserMessageToAgent)
-        })
-      .last()
-      .trigger('mouseover');
-    cy.get('[data-qa="more_message_actions"]').click()
-    cy.get('[data-qa="app_action_3667911238784"] > .c-menu_item__label').click()
+  cy.get(' [data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper > .p-rich_text_block > .p-rich_text_section')
+    .as('Message')
+    .filter(
+      function (index, element) {
+        return Cypress.$(element).text().includes(UserMessageToAgent)
+      })
+    .last()
+    .trigger('mouseover');
+  cy.get('[data-qa="more_message_actions"]').click()
+  cy.get('[data-qa="app_action_3667911238784"] > .c-menu_item__label').click()
 
 })
 
 
 
 // Fetching the Ticket ID from different logins
-Cypress.Commands.add('FetchLastTicketFromUser',() => {  
-        
-    cy.wait(5000)
-    cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
-      .as('TicketID')
-      .filter(
+Cypress.Commands.add('FetchLastTicketFromUser', () => {
 
-        function (index, element) {
-          return Cypress.$(element).text().includes(ticketMessage)
+  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+    .as('TicketID')
+    .filter(
+      function (index, element) {
+        return Cypress.$(element).text().includes(ticketMessage)
+      })
+    .last()
+    .invoke('text')
+    .then((text) => {
+      let TicketIDFromUser = text.slice(0, 12)
+      cy.log(text)
+      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+        if (TicketIDFromUser.includes("INC")) {
+          jsonData.SD_TicketIDFromUser = TicketIDFromUser;
         }
-
-      )
-      .invoke('text')
-      .then((text) => {
-
-        let SD_TicketIDFromUser = text.slice(0, 12)
-        cy.log(text)
-
-        cy.readFile('cypress/downloads/output.json').then((jsonData) => {
-          jsonData.SD_TicketIDFromUser = SD_TicketIDFromUser;
-          cy.writeFile('cypress/downloads/output.json', jsonData);
-        })
+        else {
+          jsonData.HD_TicketIDFromUser = TicketIDFromUser;
+        }
+        cy.writeFile('cypress/fixtures/output.json', jsonData);
+      })
 
     })
 
 })
 
 Cypress.Commands.add('FetchLastTicketFromAgent', () => {
-    cy.wait(5000)
-    cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
-      .as('TicketID')
-      .last()
-      .invoke('text')
-      .then((text) => {
 
-        let SD_TicketIDFromAgent = text.slice(0, 12)
-        cy.log(text)
+  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+    .as('TicketID')
+    .last()
+    .invoke('text')
+    .then((text) => {
+      let TicketIDFromAgent = text.slice(0, 12)
+      cy.log(text)
+      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+        let SD_TicketIDFromUser = jsonData.SD_TicketIDFromUser
+        let HD_TicketIDFromUser = jsonData.HD_TicketIDFromUser
 
-        cy.readFile('cypress/downloads/output.json').then((jsonData) => {
-          let TicketIDFromUser = jsonData.SD_TicketIDFromUser
-          jsonData.SD_TicketIDFromAgent = SD_TicketIDFromAgent;
-          cy.writeFile('cypress/downloads/output.json', jsonData);
-          cy.wrap(SD_TicketIDFromAgent).should('eq', TicketIDFromUser)
-        })
-
+        if (TicketIDFromAgent.includes("INC")) {
+          jsonData.SD_TicketIDFromAgent = TicketIDFromAgent;
+          cy.writeFile('cypress/fixtures/output.json', jsonData);
+          cy.wrap(TicketIDFromAgent).should('eq', SD_TicketIDFromUser)
+        }
+        else {
+          jsonData.HD_TicketIDFromAgent = TicketIDFromAgent;
+          cy.writeFile('cypress/fixtures/output.json', jsonData);
+          cy.wrap(TicketIDFromAgent).should('eq', HD_TicketIDFromUser)
+        }
       })
+    })
 })
 
 Cypress.Commands.add('FetchLastTicketInAgentOnbehalf', () => {
-    cy.wait(10000)
-    cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
-      .as('TicketID')
-      .last()
-      .invoke('text')
-      .then((text) => {
-
-        let SD_TicketCreatedOnbehalf_Agent = text.slice(0, 12)
-        cy.log(text)
-
-        cy.readFile('cypress/downloads/output.json').then((jsonData) => {
-          jsonData.SD_TicketCreatedOnbehalf_Agent = SD_TicketCreatedOnbehalf_Agent;
-          cy.writeFile('cypress/downloads/output.json', jsonData);
-        })
-
+  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+    .as('TicketID')
+    .filter(
+      function (index, element) {
+        return Cypress.$(element).text().includes(UserMessageToAgent)
+      }
+    )
+    .invoke('text')
+    .then((text) => {
+      let SD_TicketCreatedOnbehalf_Agent = text.slice(0, 12)
+      cy.log(text)
+      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+        jsonData.SD_TicketCreatedOnbehalf_Agent = SD_TicketCreatedOnbehalf_Agent;
+        cy.writeFile('cypress/fixtures/output.json', jsonData);
       })
+    })
 })
 
 Cypress.Commands.add('FetchLastTicketInUserOnbehalf', () => {
-    cy.wait(10000)
-    cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
-      .as('TicketID')
-      .last()
-      .invoke('text')
-      .then((text) => {
-        let SD_TicketCreatedOnbehalf_User = text.slice(0, 12)
-
-
-        cy.readFile('cypress/downloads/output.json').then((jsonData) => {
-          let TicketCreatedOnbehalf_Agent = jsonData.SD_TicketCreatedOnbehalf_Agent
-          jsonData.SD_TicketCreatedOnbehalf_User = SD_TicketCreatedOnbehalf_User;
-          cy.writeFile('cypress/downloads/output.json', jsonData);
-          cy.wrap(SD_TicketCreatedOnbehalf_User).should('eq', TicketCreatedOnbehalf_Agent)
-          
-        })
-
+  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+    .as('TicketID')
+    .last()
+    .invoke('text')
+    .then((text) => {
+      let SD_TicketCreatedOnbehalf_User = text.slice(0, 12)
+      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+        let TicketCreatedOnbehalf_Agent = jsonData.SD_TicketCreatedOnbehalf_Agent
+        jsonData.SD_TicketCreatedOnbehalf_User = SD_TicketCreatedOnbehalf_User;
+        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.wrap(SD_TicketCreatedOnbehalf_User).should('eq', TicketCreatedOnbehalf_Agent)
       })
+    })
 })
 
 Cypress.Commands.add('FetchTicketOnSD', (GiveInput, JsonName) => {
-    cy.SDAgentLogin();
-    cy.visit('https://saravanansd.supporthive.com/staff/login/')
-    cy.wait(5000)
-    cy.get('[title="All Tickets"]').click()
-    cy.wait(5000)
-
+  cy.SDAgentLogin();
+  cy.visit(Cypress.env('SD_LINK'))
+  cy.get('[title="All Incidents"]').click()
+  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+    let AgentTicket
+    if (JsonName == "HomeCreation_TicketIDInSD") {
+      AgentTicket = jsonData.SD_TicketIDFromAgent
+    }
+    else if (JsonName == "OnBehalfOf_TicketIDInSD") {
+      AgentTicket = jsonData.SD_TicketCreatedOnbehalf_User
+    }
     cy.get('.hf-ticket-box_main > .hf-ticket-box_main_left > .hf-ticket-box_display-id')
-    .as('TicketID')
-    .first()
-    .invoke('text')
-    .then((text) => {  
-
+      .as('TicketID')
+      .filter(
+        function (index, element) {
+          return Cypress.$(element).text().includes(AgentTicket)
+        })
+      .invoke('text')
+      .then((text) => {
         let TicketFromSD = text
         let AssertInput = GiveInput
-        cy.readFile('cypress/downloads/output.json').then((jsonData) => {
-            jsonData[JsonName] = TicketFromSD;
-            cy.wrap(jsonData[JsonName]).should('eq', AssertInput)
-            cy.writeFile('cypress/downloads/output.json', jsonData);
-
-          })
-    })
-
+        jsonData[JsonName] = TicketFromSD;
+        cy.wrap(jsonData[JsonName]).should('eq', AssertInput)
+        cy.writeFile('cypress/fixtures/output.json', jsonData);
+      })
+  })
 })

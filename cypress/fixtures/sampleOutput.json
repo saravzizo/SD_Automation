@@ -1,0 +1,13 @@
+{
+    "HD_TicketIDFromUser": "",
+    "HD_TicketIDFromAgent": "",
+    "AssigneeSuccessMessage": "",
+    "CategorySuccessMessage": "",
+    "SD_TicketIDFromUser": "",
+    "SD_TicketIDFromAgent": "",
+    "HomeCreation_TicketIDInSD": "",
+    "SD_TicketCreatedOnbehalf_Agent": "",
+    "SD_TicketCreatedOnbehalf_User": "",
+    "OnBehalfOf_TicketIDInSD": "",
+    "TicketMessage_ToValidateAssignee": ""
+  }
