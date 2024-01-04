@@ -11,8 +11,7 @@ const UserMessageToAgent = faker.lorem.words(1)
 const AgentMessageToUser = "Ticket has been created on behalf of you"
 
 const CategoryNameOnHD = "regression"
-const DataFieldCS = faker.lorem.words(3)
-const TicketAssignee = "Pradeep Gupta"
+
 
 
 
@@ -20,7 +19,7 @@ const TicketAssignee = "Pradeep Gupta"
 Cypress.Commands.add('SlackAgent', (email, password) => {
 
   cy.session("Logging in as Agent in the Slack", () => {
-    cy.visit(Cypress.env('SLACK_SIGNIN'))
+    cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
     cy.get('[data-qa="login_email"]').type(email)
     cy.get('[data-qa="login_password"]').type(password)
     cy.get('[data-qa="signin_button"]').click()
@@ -29,7 +28,7 @@ Cypress.Commands.add('SlackAgent', (email, password) => {
 
 Cypress.Commands.add('SlackEndUser', (email, password) => {
   cy.session('Logging in as user in the Slack', () => {
-    cy.visit(Cypress.env('SLACK_SIGNIN'))
+    cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
     cy.get('[data-qa="login_email"]').type(email)
     cy.get('[data-qa="login_password"]').type(password)
     cy.get('[data-qa="signin_button"]').click()
@@ -96,35 +95,6 @@ Cypress.Commands.add('SendMessageToAssistAI', () => {
   cy.get('.ql-editor > p').type(ticketMessage + '{enter}')
 })
 
-Cypress.Commands.add('ClickQuickActionButton', () => {
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > :nth-child(3) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
-    .last()
-    .click();
-})
-
-Cypress.Commands.add('SetTicketAssignee', () => {
-  cy.get('[data-qa="quick-actions_field-action-input"]').click();
-  cy.get('[data-qa="happyfox_assign-ticket"] > .p-block-kit-select_options').click();
-  cy.get('[data-qa="quick-actions_field-assignee-input"]').type(TicketAssignee)
-  cy.get('[data-qa="quick-actions_field-assignee_option_0"]').click();
-  cy.get('[data-qa="wizard_modal_next"]').click();
-
-})
-
-Cypress.Commands.add('TicketAssigneeMessage', () => {
-  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
-    let ticket = jsonData.HD_TicketIDFromUser;
-    let TicketMessage_Format = `A user was assigned to ticket ${ticket} successfully`
-    cy.get('.p-message_pane_message__message_label > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > .p-autoclog__hook > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .p-mrkdwn_element')
-      .invoke('text')
-      .then((text) => {
-        let SuccessMessage_AfterAssigneeSet = text
-        cy.wrap(SuccessMessage_AfterAssigneeSet).should('eq', TicketMessage_Format)
-        jsonData.TicketMessage = SuccessMessage_AfterAssigneeSet
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
-      })
-  })
-})
 
 
 
@@ -145,7 +115,9 @@ Cypress.Commands.add('TicketCreationForm', () => {
 
 Cypress.Commands.add('TicektCreationFormOnbehalf', () => {
   cy.get('[data-qa="new-ticket-form_field-team-input"]').type(Team)
+  cy.wait(1000)
   cy.get('.p-block-kit-select_options').click();
+  cy.wait(1000)
   cy.get('#new-ticket-form_field-7-new-ticket-form_field-7').type(text)
   cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 })
@@ -156,8 +128,11 @@ Cypress.Commands.add('CreateTicketOnAIHome', () => {
     .click()
   cy.get('[data-qa="new-ticket-form_field-category-input"]').type(CategoryNameOnHD)
   cy.get('.p-block-kit-select_options').click();
-  cy.get('#new-ticket-form_field-t-cf-12-new-ticket-form_field-t-cf-12').type(DataFieldCS)
   cy.get('[data-qa="wizard_modal_next"]').click();
+  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+    jsonData.TicketMessage_ToValidateAssignee = ticketMessage
+    cy.writeFile('cypress/fixtures/output.json', jsonData);
+  })
 })
 
 
@@ -228,6 +203,7 @@ Cypress.Commands.add('FetchLastTicketFromUser', () => {
 })
 
 Cypress.Commands.add('FetchLastTicketFromAgent', () => {
+
   cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
     .as('TicketID')
     .last()

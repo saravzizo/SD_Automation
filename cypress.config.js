@@ -9,9 +9,11 @@ module.exports = defineConfig({
   },
   env:
   {
-    "SLACK_SIGNIN":"dummy",
+    "HD_LINK":"https//:www.google.com",
     "SD_LINK":"https//:www.google.com",
     "SLACK_VISIT_URL":"https//:www.google.com",
+    "SLACK_SIGNIN_URL":"dummy",
+    
     "ENDUSER_SLACK_EMAIL":"enduser@gmail.com",
     "ENDUSER_SLACK_PASSWORD":"user@12345",
 

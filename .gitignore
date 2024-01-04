@@ -3,5 +3,4 @@ downloads/
 screenshots/
 
 .as-a.ini
-package-lock.json
-package.json
+fixtures/output.json
