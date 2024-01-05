@@ -16,7 +16,7 @@ describe('Ticket Creation', () => {
         cy.ClickMessageTabInSlack();
         cy.SendMessageToAssistAI();
         cy.ScrollEnd();
-        cy.CreateTicketOnAIHome();
+        cy.CreateTicketByDm();
         cy.FetchLastTicketFromUser();
     })
 })

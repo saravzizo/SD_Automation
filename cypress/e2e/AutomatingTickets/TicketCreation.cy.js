@@ -75,7 +75,7 @@ describe('Ticket Creation for the Onbehalf of Requester', () => {
     cy.SlackAgent();
     cy.VisitSlack();
     cy.NaviagateToUserProfile();
-    cy.NavigateToTicketFormUserMsg();
+    cy.NavigateToTicketFromUserMsg();
     cy.TicektCreationFormOnbehalf();
     cy.SendMsgToUserFromAgent();
     cy.NavigateToAssistAiInSlack();
