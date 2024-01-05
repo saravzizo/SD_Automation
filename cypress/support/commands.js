@@ -2,21 +2,20 @@
 import { faker } from '@faker-js/faker'
 
 const ticketTitle = faker.lorem.word(3)
-const Team = "IT"
+
 const text = faker.lorem.word(10)
 const ticketMessage = faker.lorem.words(1)
-
-
 const UserMessageToAgent = faker.lorem.words(1)
-const AgentMessageToUser = "Ticket has been created on behalf of you"
 
-const CategoryNameOnHD = "regression"
+const Team = Cypress.env('Team')
+const CategoryNameOnHD =  Cypress.env('CategoryNameOnHD')
+const AgentMessageToUser = Cypress.env('AgentMessageToUser')
 
 
 
 
 // Commands for Login
-Cypress.Commands.add('SlackAgent', (email, password) => {
+Cypress.Commands.add('salckAgent', (email, password) => {
 
   cy.session("Logging in as Agent in the Slack", () => {
     cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
@@ -26,7 +25,7 @@ Cypress.Commands.add('SlackAgent', (email, password) => {
   })
 })
 
-Cypress.Commands.add('SlackEndUser', (email, password) => {
+Cypress.Commands.add('slackEndUser', (email, password) => {
   cy.session('Logging in as user in the Slack', () => {
     cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
     cy.get('[data-qa="login_email"]').type(email)
@@ -49,10 +48,10 @@ Cypress.Commands.add('SDAgent', (email, password) => {
   )
 })
 
-Cypress.Commands.add('SlackLogins', () => {
+Cypress.Commands.add('slackLogins', () => {
   // Creating Sessions in Slack
-  cy.SlackEndUser(Cypress.env('ENDUSER_SLACK_EMAIL'), Cypress.env('ENDUSER_SLACK_PASSWORD'))
-  cy.SlackAgent(Cypress.env('AGENT_SLACK_EMAIL'), Cypress.env('AGENT_SLACK_PASSWORD'))
+  cy.slackEndUser(Cypress.env('ENDUSER_SLACK_EMAIL'), Cypress.env('ENDUSER_SLACK_PASSWORD'))
+  cy.salckAgent(Cypress.env('AGENT_SLACK_EMAIL'), Cypress.env('AGENT_SLACK_PASSWORD'))
 })
 
 Cypress.Commands.add('SDAgentLogin', () => {
@@ -66,32 +65,32 @@ Cypress.Commands.add('SDAgentLogin', () => {
 
 // Commands for Navigation
 
-Cypress.Commands.add('ScrollEnd', () => {
+Cypress.Commands.add('scrollEnd', () => {
   cy.get('[data-qa="message_content"]').last().scrollIntoView();
 });
 
-Cypress.Commands.add('VisitSlack', () => {
+Cypress.Commands.add('visitSlack', () => {
   cy.visit(Cypress.env('SLACK_VISIT_URL'))
 })
 
-Cypress.Commands.add('NavigateToAssistAiInSlack', () => {
+Cypress.Commands.add('navigateToAssistAiInSlack', () => {
   cy.get('[data-qa="channel_sidebar_name_assist-ai-(staging)"]').click()
 })
 
-Cypress.Commands.add('ClickHomeTabInSlack', () => {
+Cypress.Commands.add('clickHomeTabInSlack', () => {
 
   cy.get('[data-qa="home"] > .c-tabs__tab_content').click()
 })
 
-Cypress.Commands.add('ClickMessageTabInSlack', () => {
+Cypress.Commands.add('clickMessageTabInSlack', () => {
   cy.get('[data-qa="messages"] > .c-tabs__tab_content > span').click()
 })
 
-Cypress.Commands.add('ClickCreateTicketOnHome', () => {
+Cypress.Commands.add('clickCreateTicketOnHome', () => {
   cy.get(':nth-child(2) > [data-qa="bk_button-element"]').click();
 })
 
-Cypress.Commands.add('SendMessageToAssistAI', () => {
+Cypress.Commands.add('sendMessageToAssistAI', () => {
   cy.get('.ql-editor > p').type(ticketMessage + '{enter}')
 })
 
@@ -101,7 +100,7 @@ Cypress.Commands.add('SendMessageToAssistAI', () => {
 
 
 // Commands for Ticket Creation
-Cypress.Commands.add('TicketCreationForm', () => {
+Cypress.Commands.add('ticketCreationForm', () => {
   cy.get('[data-qa="user-new-request_field-team-input"]').type(Team)
   cy.wait(1000)
   cy.get('.p-block-kit-select_options').click();
@@ -113,7 +112,7 @@ Cypress.Commands.add('TicketCreationForm', () => {
 
 })
 
-Cypress.Commands.add('TicektCreationFormOnbehalf', () => {
+Cypress.Commands.add('ticektCreationFormOnbehalf', () => {
   cy.get('[data-qa="new-ticket-form_field-team-input"]').type(Team)
   cy.wait(1000)
   cy.get('.p-block-kit-select_options').click();
@@ -122,16 +121,16 @@ Cypress.Commands.add('TicektCreationFormOnbehalf', () => {
   cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 })
 
-Cypress.Commands.add('CreateTicketByDm', () => {
+Cypress.Commands.add('createTicketByDm', () => {
   cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > .p-autoclog__hook > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > :nth-child(2) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
     .last()
     .click()
   cy.get('[data-qa="new-ticket-form_field-category-input"]').type(CategoryNameOnHD)
   cy.get('.p-block-kit-select_options').click();
   cy.get('[data-qa="wizard_modal_next"]').click();
-  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+  cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
     jsonData.TicketMessage_ToValidateAssignee = ticketMessage
-    cy.writeFile('cypress/fixtures/output.json', jsonData);
+    cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
   })
 })
 
@@ -139,25 +138,25 @@ Cypress.Commands.add('CreateTicketByDm', () => {
 
 
 // Onbehalf Ticket Creation
-Cypress.Commands.add('SendMsgToAgentFromUser', () => {
+Cypress.Commands.add('sendMsgToAgentFromUser', () => {
   cy.get('[data-qa="channel_sidebar_name_saravanan.s"] ').click()
   cy.get('.ql-editor > p').type(UserMessageToAgent)
   cy.get('.c-wysiwyg_container__send_button--with_options').click()
 })
 
-Cypress.Commands.add('SendMsgToUserFromAgent', () => {
+Cypress.Commands.add('sendMsgToUserFromAgent', () => {
   cy.get('.ql-editor > p').type(AgentMessageToUser)
   cy.get('[data-qa="texty_send_button"]').click()
 
 })
 
-Cypress.Commands.add('NaviagateToUserProfile', () => {
+Cypress.Commands.add('naviagateToUserProfile', () => {
 
   cy.contains('END USER').click()
 
 })
 
-Cypress.Commands.add('NavigateToTicketFromUserMsg', () => {
+Cypress.Commands.add('navigateToTicketFromUserMsg', () => {
 
   cy.get('.p-rich_text_section')
     .as('Message')
@@ -175,7 +174,7 @@ Cypress.Commands.add('NavigateToTicketFromUserMsg', () => {
 
 
 // Fetching the Ticket ID from different logins
-Cypress.Commands.add('FetchLastTicketFromUser', () => {
+Cypress.Commands.add('fetchLastTicketFromUser', () => {
 
   cy.log(ticketMessage)
   cy.get('.c-message_attachment__text>>>>')
@@ -189,21 +188,21 @@ Cypress.Commands.add('FetchLastTicketFromUser', () => {
     .then((text) => {
       let TicketIDFromUser = text.slice(0, 12)
       cy.log(text)
-      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+      cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
         if (TicketIDFromUser.includes("INC")) {
           jsonData.SD_TicketIDFromUser = TicketIDFromUser;
         }
         else {
           jsonData.HD_TicketIDFromUser = TicketIDFromUser;
         }
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
       })
 
     })
 
 })
 
-Cypress.Commands.add('FetchLastTicketFromAgent', () => {
+Cypress.Commands.add('fetchLastTicketFromAgent', () => {
 
   cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
     .as('TicketID')
@@ -212,25 +211,25 @@ Cypress.Commands.add('FetchLastTicketFromAgent', () => {
     .then((text) => {
       let TicketIDFromAgent = text.slice(0, 12)
       cy.log(text)
-      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+      cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
         let SD_TicketIDFromUser = jsonData.SD_TicketIDFromUser
         let HD_TicketIDFromUser = jsonData.HD_TicketIDFromUser
 
         if (TicketIDFromAgent.includes("INC")) {
           jsonData.SD_TicketIDFromAgent = TicketIDFromAgent;
-          cy.writeFile('cypress/fixtures/output.json', jsonData);
+          cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
           cy.wrap(TicketIDFromAgent).should('eq', SD_TicketIDFromUser)
         }
         else {
           jsonData.HD_TicketIDFromAgent = TicketIDFromAgent;
-          cy.writeFile('cypress/fixtures/output.json', jsonData);
+          cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
           cy.wrap(TicketIDFromAgent).should('eq', HD_TicketIDFromUser)
         }
       })
     })
 })
 
-Cypress.Commands.add('FetchLastTicketInAgentOnbehalf', () => {
+Cypress.Commands.add('fetchLastTicketInAgentOnbehalf', () => {
   cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .filter(
@@ -243,34 +242,34 @@ Cypress.Commands.add('FetchLastTicketInAgentOnbehalf', () => {
     .then((text) => {
       let SD_TicketCreatedOnbehalf_Agent = text.slice(0, 12)
       cy.log(text)
-      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+      cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
         jsonData.SD_TicketCreatedOnbehalf_Agent = SD_TicketCreatedOnbehalf_Agent;
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
       })
     })
 })
 
-Cypress.Commands.add('FetchLastTicketInUserOnbehalf', () => {
+Cypress.Commands.add('fetchLastTicketInUserOnbehalf', () => {
   cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .last()
     .invoke('text')
     .then((text) => {
       let SD_TicketCreatedOnbehalf_User = text.slice(0, 12)
-      cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+      cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
         let TicketCreatedOnbehalf_Agent = jsonData.SD_TicketCreatedOnbehalf_Agent
         jsonData.SD_TicketCreatedOnbehalf_User = SD_TicketCreatedOnbehalf_User;
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
         cy.wrap(SD_TicketCreatedOnbehalf_User).should('eq', TicketCreatedOnbehalf_Agent)
       })
     })
 })
 
-Cypress.Commands.add('FetchTicketOnSD', (GiveInput, JsonName) => {
+Cypress.Commands.add('fetchTicketOnSD', (GiveInput, JsonName) => {
   cy.SDAgentLogin();
   cy.visit(Cypress.env('SD_LINK'))
   cy.get('[title="All Incidents"]').click()
-  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+  cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
     let AgentTicket
     if (JsonName == "HomeCreation_TicketIDInSD") {
       AgentTicket = jsonData.SD_TicketIDFromAgent
@@ -290,7 +289,7 @@ Cypress.Commands.add('FetchTicketOnSD', (GiveInput, JsonName) => {
         let AssertInput = GiveInput
         jsonData[JsonName] = TicketFromSD;
         cy.wrap(jsonData[JsonName]).should('eq', AssertInput)
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
       })
   })
 })

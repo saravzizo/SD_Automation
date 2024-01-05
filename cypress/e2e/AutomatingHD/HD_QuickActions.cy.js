@@ -4,34 +4,34 @@ describe('REMAINDER : IT NEEDS A SD TO BE INSTALLED IN ASSIST AI.!', () => {
 describe('Creating Sessions', () => {
     // Creating Sessions for the End User and Agent
     it('Logging into the Slack as Agent and User', () => {
-        cy.SlackLogins();
+        cy.slackLogins();
     })
 })
 
 describe('Ticket Creation', () => {
     it('Creating Ticket from User login', () => {
-        cy.SlackEndUser();
-        cy.VisitSlack();
-        cy.NavigateToAssistAiInSlack();
-        cy.ClickMessageTabInSlack();
-        cy.SendMessageToAssistAI();
-        cy.ScrollEnd();
-        cy.CreateTicketByDm();
-        cy.FetchLastTicketFromUser();
+        cy.slackEndUser();
+        cy.visitSlack();
+        cy.navigateToAssistAiInSlack();
+        cy.clickMessageTabInSlack();
+        cy.sendMessageToAssistAI();
+        cy.scrollEnd();
+        cy.createTicketByDm();
+        cy.fetchLastTicketFromUser();
     })
 })
 
 describe('Verify the Ticket Assignee - Quick Action', () => {
     it('Set Ticket Assignee for the ticket created', () => {
-        cy.SlackAgent();
-        cy.VisitSlack();
-        cy.NavigateToAssistAiInSlack();
-        cy.ClickMessageTabInSlack();
-        cy.ScrollEnd();
-        cy.FetchLastTicketFromAgent();
-        cy.ClickQuickActionButton();
-        cy.SetTicketAssignee();
-        cy.TicketAssigneeAndCategoryChange_SuccessMsg("Assign");
+        cy.salckAgent();
+        cy.visitSlack();
+        cy.navigateToAssistAiInSlack();
+        cy.clickMessageTabInSlack();
+        cy.scrollEnd();
+        cy.fetchLastTicketFromAgent();
+        cy.clickQuickActionButton();
+        cy.setTicketAssignee();
+        cy.ticketAssigneeAndCategoryChange_SuccessMsg("Assign");
     })
 
     it('Logging into the Helpdesk', () => {
@@ -46,18 +46,34 @@ describe('Verify the Ticket Assignee - Quick Action', () => {
 
 describe('Verify the Ticket Category Change - Quick Action', () => {
     it('Change Ticket Category for the ticket created', () => {
-        cy.SlackAgent();
-        cy.VisitSlack();
-        cy.NavigateToAssistAiInSlack();
-        cy.ClickMessageTabInSlack();
-        cy.ScrollEnd();
-        cy.FetchLastTicketFromAgent();
-        cy.ClickQuickActionButton();
+        cy.salckAgent();
+        cy.visitSlack();
+        cy.navigateToAssistAiInSlack();
+        cy.clickMessageTabInSlack();
+        cy.scrollEnd();
+        cy.fetchLastTicketFromAgent();
+        cy.clickQuickActionButton();
         cy.changeTicketCategory(); 
-        cy.TicketAssigneeAndCategoryChange_SuccessMsg("Category");
+        cy.ticketAssigneeAndCategoryChange_SuccessMsg("Category");
     })
 
     it('Verify the Category in HelpDesk', () => {
         cy.HD_TicketAssigneeAndCategoryCheck("Category");
+    })
+})
+
+describe('Verify the Ticket Status Change - Quick Action', () => {
+    it('Change Ticket Status for the ticket created', () => {
+        cy.salckAgent();
+        cy.visitSlack();
+        cy.navigateToAssistAiInSlack();
+        cy.clickMessageTabInSlack();
+        cy.scrollEnd();
+        cy.fetchLastTicketFromAgent();
+        cy.clickQuickActionButton();
+    })
+
+    it('Verify the Status in HelpDesk', () => {
+
     })
 })

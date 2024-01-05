@@ -1,5 +1,5 @@
-const TicketAssignee = "Pradeep Gupta"
-const category = "temp2"
+const TicketAssignee = Cypress.env('TicketAssignee')
+const category = Cypress.env('category')
 
 // Helpdesklogin
 Cypress.Commands.add('HD_Login', () => {
@@ -18,13 +18,13 @@ Cypress.Commands.add('HD_Login', () => {
 
 
 
-Cypress.Commands.add('ClickQuickActionButton', () => {
+Cypress.Commands.add('clickQuickActionButton', () => {
   cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > :nth-child(3) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
     .last()
     .click();
 })
 
-Cypress.Commands.add('SetTicketAssignee', () => {
+Cypress.Commands.add('setTicketAssignee', () => {
   cy.get('[data-qa="quick-actions_field-action-input"]').click();
   cy.get('[data-qa="happyfox_assign-ticket"] > .p-block-kit-select_options').click();
   cy.get('[data-qa="quick-actions_field-assignee-input"]').type(TicketAssignee)
@@ -45,8 +45,8 @@ Cypress.Commands.add('changeTicketCategory', () => {
 
 })
 
-Cypress.Commands.add('TicketAssigneeAndCategoryChange_SuccessMsg', (input) => {
-  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+Cypress.Commands.add('ticketAssigneeAndCategoryChange_SuccessMsg', (input) => {
+  cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
 
     let ticket = jsonData.HD_TicketIDFromUser;
     let AssigneeTicketMessage_Format = `A user was assigned to ticket ${ticket} successfully`
@@ -67,7 +67,7 @@ Cypress.Commands.add('TicketAssigneeAndCategoryChange_SuccessMsg', (input) => {
           cy.wrap(SuccessMessage).should('eq', CategoryTicketMessage_Format)
           jsonData.CategorySuccessMessage = SuccessMessage
         }     
-        cy.writeFile('cypress/fixtures/output.json', jsonData);
+        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
       })
   })
 })
@@ -77,7 +77,7 @@ Cypress.Commands.add('HD_TicketAssigneeAndCategoryCheck', (input) => {
   cy.visit(Cypress.env('HD_LINK'))
   cy.get('[title="All Tickets"]').click()
 
-  cy.readFile('cypress/fixtures/output.json').then((jsonData) => {
+  cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
     let ticketMessage = jsonData.TicketMessage_ToValidateAssignee;
     cy.contains(ticketMessage).click()
 
