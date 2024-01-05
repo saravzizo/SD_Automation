@@ -28,6 +28,14 @@ module.exports = defineConfig({
 
     "AGENT_SD_EMAIL":"sdagent@gmail.com",
     "AGENT_SD_PASSWORD":"agent@123",
+
+    "Team":"IT",
+    "CategoryNameOnHD":"regression",
+    "AgentMessageToUser":"Ticket has been created on behalf of you",
+    
+    "TicketAssignee":"Pradeep Gupta",
+    "category":"temp2",
+
   },
   
 
