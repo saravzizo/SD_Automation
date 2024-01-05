@@ -122,7 +122,7 @@ Cypress.Commands.add('TicektCreationFormOnbehalf', () => {
   cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 })
 
-Cypress.Commands.add('CreateTicketOnAIHome', () => {
+Cypress.Commands.add('CreateTicketByDm', () => {
   cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > .p-autoclog__hook > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > :nth-child(2) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
     .last()
     .click()
@@ -140,7 +140,7 @@ Cypress.Commands.add('CreateTicketOnAIHome', () => {
 
 // Onbehalf Ticket Creation
 Cypress.Commands.add('SendMsgToAgentFromUser', () => {
-  cy.get('[data-qa="channel_sidebar_name_saravanan.s"] > span').click()
+  cy.get('[data-qa="channel_sidebar_name_saravanan.s"] ').click()
   cy.get('.ql-editor > p').type(UserMessageToAgent)
   cy.get('.c-wysiwyg_container__send_button--with_options').click()
 })
@@ -157,9 +157,9 @@ Cypress.Commands.add('NaviagateToUserProfile', () => {
 
 })
 
-Cypress.Commands.add('NavigateToTicketFormUserMsg', () => {
+Cypress.Commands.add('NavigateToTicketFromUserMsg', () => {
 
-  cy.get(' [data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper > .p-rich_text_block > .p-rich_text_section')
+  cy.get('.p-rich_text_section')
     .as('Message')
     .filter(
       function (index, element) {
@@ -177,7 +177,8 @@ Cypress.Commands.add('NavigateToTicketFormUserMsg', () => {
 // Fetching the Ticket ID from different logins
 Cypress.Commands.add('FetchLastTicketFromUser', () => {
 
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+  cy.log(ticketMessage)
+  cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .filter(
       function (index, element) {
@@ -230,13 +231,14 @@ Cypress.Commands.add('FetchLastTicketFromAgent', () => {
 })
 
 Cypress.Commands.add('FetchLastTicketInAgentOnbehalf', () => {
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+  cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .filter(
       function (index, element) {
         return Cypress.$(element).text().includes(UserMessageToAgent)
       }
     )
+    .last()
     .invoke('text')
     .then((text) => {
       let SD_TicketCreatedOnbehalf_Agent = text.slice(0, 12)
@@ -249,7 +251,7 @@ Cypress.Commands.add('FetchLastTicketInAgentOnbehalf', () => {
 })
 
 Cypress.Commands.add('FetchLastTicketInUserOnbehalf', () => {
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+  cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .last()
     .invoke('text')
