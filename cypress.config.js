@@ -29,12 +29,12 @@ module.exports = defineConfig({
     "AGENT_SD_EMAIL":"sdagent@gmail.com",
     "AGENT_SD_PASSWORD":"agent@123",
 
-    "Team":"IT",
-    "CategoryNameOnHD":"regression",
-    "AgentMessageToUser":"Ticket has been created on behalf of you",
+    "TEAM":"Dummy",
+    "CATEGORY_NAME_ON_HD":"cat",
+    "AGENT_MESSAGE_TO_USER":"success msg",
     
-    "TicketAssignee":"Pradeep Gupta",
-    "category":"temp2",
+    "TICKET_ASSIGNEE":"Agent Name",
+    "CATEGORY":"cat1",
 
   },
   

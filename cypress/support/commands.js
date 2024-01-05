@@ -7,9 +7,9 @@ const text = faker.lorem.word(10)
 const ticketMessage = faker.lorem.words(1)
 const UserMessageToAgent = faker.lorem.words(1)
 
-const Team = Cypress.env('Team')
-const CategoryNameOnHD =  Cypress.env('CategoryNameOnHD')
-const AgentMessageToUser = Cypress.env('AgentMessageToUser')
+const Team = Cypress.env('TEAM')
+const CategoryNameOnHD =  Cypress.env('CATEGORY_NAME_ON_HD')
+const AgentMessageToUser = Cypress.env('AGENT_MESSAGE_TO_USER')
 
 
 
@@ -105,7 +105,7 @@ Cypress.Commands.add('ticketCreationForm', () => {
   cy.wait(1000)
   cy.get('.p-block-kit-select_options').click();
   cy.wait(1000)
-  cy.get('#user-new-request_field-7-user-new-request_field-7').type(text)
+  // cy.get('#user-new-request_field-7-user-new-request_field-7').type(text)
   cy.get('#user-new-request_field-subject-user-new-request_field-subject').type(ticketTitle)
   cy.get('[data-qa="user-new-request_field-message-user-new-request_field-message"]').type(ticketMessage)
   cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
@@ -117,7 +117,7 @@ Cypress.Commands.add('ticektCreationFormOnbehalf', () => {
   cy.wait(1000)
   cy.get('.p-block-kit-select_options').click();
   cy.wait(1000)
-  cy.get('#new-ticket-form_field-7-new-ticket-form_field-7').type(text)
+  // cy.get('#new-ticket-form_field-7-new-ticket-form_field-7').type(text)
   cy.get('[data-qa="wizard_modal_next"] > [data-qa="bk-plain_text_element"] > span').click()
 })
 
@@ -139,7 +139,7 @@ Cypress.Commands.add('createTicketByDm', () => {
 
 // Onbehalf Ticket Creation
 Cypress.Commands.add('sendMsgToAgentFromUser', () => {
-  cy.get('[data-qa="channel_sidebar_name_saravanan.s"] ').click()
+  cy.contains('Agent').click()
   cy.get('.ql-editor > p').type(UserMessageToAgent)
   cy.get('.c-wysiwyg_container__send_button--with_options').click()
 })
@@ -152,7 +152,7 @@ Cypress.Commands.add('sendMsgToUserFromAgent', () => {
 
 Cypress.Commands.add('naviagateToUserProfile', () => {
 
-  cy.contains('END USER').click()
+  cy.contains('End user').click()
 
 })
 

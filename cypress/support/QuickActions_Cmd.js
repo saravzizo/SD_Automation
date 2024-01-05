@@ -1,5 +1,5 @@
-const TicketAssignee = Cypress.env('TicketAssignee')
-const category = Cypress.env('category')
+const TicketAssignee = Cypress.env('TICKET_ASSIGNEE')
+const category = Cypress.env('CATEGORY')
 
 // Helpdesklogin
 Cypress.Commands.add('HD_Login', () => {
