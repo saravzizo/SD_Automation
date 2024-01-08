@@ -1,13 +1,15 @@
-{
-    "HD_TicketIDFromUser": "",
+{   "HD_TicketIDFromUser": "",
     "HD_TicketIDFromAgent": "",
+    "TicketMessage_ForQuickActions": "",
     "AssigneeSuccessMessage": "",
     "CategorySuccessMessage": "",
+    "TicketStatusSuccessMessage": "",
+    "PrivateNoteSuccessMessage": "",
+    "PrivateMessage": "tener ea",
     "SD_TicketIDFromUser": "",
     "SD_TicketIDFromAgent": "",
     "HomeCreation_TicketIDInSD": "",
     "SD_TicketCreatedOnbehalf_Agent": "",
     "SD_TicketCreatedOnbehalf_User": "",
-    "OnBehalfOf_TicketIDInSD": "",
-    "TicketMessage_ToValidateAssignee": ""
+    "OnBehalfOf_TicketIDInSD": ""
   }
