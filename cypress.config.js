@@ -35,6 +35,7 @@ module.exports = defineConfig({
     
     "TICKET_ASSIGNEE":"Agent Name",
     "CATEGORY":"cat1",
+    "TICKET_STATUS":"open",
 
   },
   

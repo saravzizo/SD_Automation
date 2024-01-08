@@ -6,6 +6,9 @@ describe('Creating Sessions', () => {
     it('Logging into the Slack as Agent and User', () => {
         cy.slackLogins();
     })
+    it('Logging into the Helpdesk', () => {
+        cy.HD_Login();
+    })
 })
 
 describe('Ticket Creation', () => {
@@ -21,9 +24,27 @@ describe('Ticket Creation', () => {
     })
 })
 
-describe('Verify the Ticket Assignee - Quick Action', () => {
+describe('Private Note - Quick Action', () => {
+    it('Add Private Note for the ticket created', () => {
+        cy.slackAgent();
+        cy.visitSlack();
+        cy.navigateToAssistAiInSlack();
+        cy.clickMessageTabInSlack();
+        cy.scrollEnd();
+        cy.fetchLastTicketFromAgent();
+        cy.clickQuickActionButton();
+        cy.addPrivateNote();
+        cy.successMessageCheck("private")
+    })
+
+    it('Verify the Private Note in HelpDesk', () => {
+        cy.HD_QuickActionsAssertion("private");
+    })
+})
+
+describe('Ticket Assignee - Quick Action', () => {
     it('Set Ticket Assignee for the ticket created', () => {
-        cy.salckAgent();
+        cy.slackAgent();
         cy.visitSlack();
         cy.navigateToAssistAiInSlack();
         cy.clickMessageTabInSlack();
@@ -31,49 +52,50 @@ describe('Verify the Ticket Assignee - Quick Action', () => {
         cy.fetchLastTicketFromAgent();
         cy.clickQuickActionButton();
         cy.setTicketAssignee();
-        cy.ticketAssigneeAndCategoryChange_SuccessMsg("Assign");
-    })
-
-    it('Logging into the Helpdesk', () => {
-        cy.HD_Login();
+        cy.successMessageCheck("Assign");
     })
 
     it('Verify the Ticket Assignee in HelpDesk', () => {
-        cy.HD_TicketAssigneeAndCategoryCheck("Assign");
+        cy.HD_QuickActionsAssertion("Assign");
     })
 
 })
 
-describe('Verify the Ticket Category Change - Quick Action', () => {
+describe('Ticket Category Change - Quick Action', () => {
     it('Change Ticket Category for the ticket created', () => {
-        cy.salckAgent();
+        cy.slackAgent();
         cy.visitSlack();
         cy.navigateToAssistAiInSlack();
         cy.clickMessageTabInSlack();
         cy.scrollEnd();
         cy.fetchLastTicketFromAgent();
         cy.clickQuickActionButton();
-        cy.changeTicketCategory(); 
-        cy.ticketAssigneeAndCategoryChange_SuccessMsg("Category");
+        cy.changeTicketCategory();
+        cy.successMessageCheck("Category");
     })
 
     it('Verify the Category in HelpDesk', () => {
-        cy.HD_TicketAssigneeAndCategoryCheck("Category");
+        cy.HD_QuickActionsAssertion("Category");
     })
 })
 
-describe('Verify the Ticket Status Change - Quick Action', () => {
+describe('Ticket Status Change - Quick Action', () => {
     it('Change Ticket Status for the ticket created', () => {
-        cy.salckAgent();
+        cy.slackAgent();
         cy.visitSlack();
         cy.navigateToAssistAiInSlack();
         cy.clickMessageTabInSlack();
         cy.scrollEnd();
         cy.fetchLastTicketFromAgent();
         cy.clickQuickActionButton();
+        cy.changeTicketStatus();
+        cy.successMessageCheck("status")
     })
 
     it('Verify the Status in HelpDesk', () => {
-
+        cy.HD_QuickActionsAssertion("status");
     })
 })
+
+
+

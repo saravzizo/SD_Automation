@@ -15,7 +15,7 @@ const AgentMessageToUser = Cypress.env('AGENT_MESSAGE_TO_USER')
 
 
 // Commands for Login
-Cypress.Commands.add('salckAgent', (email, password) => {
+Cypress.Commands.add('slackAgent', (email, password) => {
 
   cy.session("Logging in as Agent in the Slack", () => {
     cy.visit(Cypress.env('SLACK_SIGNIN_URL'))
@@ -51,12 +51,26 @@ Cypress.Commands.add('SDAgent', (email, password) => {
 Cypress.Commands.add('slackLogins', () => {
   // Creating Sessions in Slack
   cy.slackEndUser(Cypress.env('ENDUSER_SLACK_EMAIL'), Cypress.env('ENDUSER_SLACK_PASSWORD'))
-  cy.salckAgent(Cypress.env('AGENT_SLACK_EMAIL'), Cypress.env('AGENT_SLACK_PASSWORD'))
+  cy.slackAgent(Cypress.env('AGENT_SLACK_EMAIL'), Cypress.env('AGENT_SLACK_PASSWORD'))
 })
 
 Cypress.Commands.add('SDAgentLogin', () => {
   // Creating Sessions in servicedesk
   cy.SDAgent(Cypress.env('AGENT_SD_EMAIL'), Cypress.env('AGENT_SD_PASSWORD'))
+})
+
+Cypress.Commands.add('HD_Login', () => {
+  cy.session("Logging in as Agent in the HD", () => {
+
+    cy.visit(Cypress.env('HD_LINK'))
+    cy.get('#id_username').type(Cypress.env('AGENT_HD_EMAIL'))
+    cy.get('#id_password').type(Cypress.env('AGENT_HD_PASSWORD'))
+    cy.get('#btn-submit').click()
+    cy.url().should('eq', Cypress.env('HD_LINK'))
+    cy.wait(5000)
+
+  })
+
 })
 
 
@@ -83,7 +97,7 @@ Cypress.Commands.add('clickHomeTabInSlack', () => {
 })
 
 Cypress.Commands.add('clickMessageTabInSlack', () => {
-  cy.get('[data-qa="messages"] > .c-tabs__tab_content > span').click()
+  cy.get('[data-qa="messages"] > .c-tabs__tab_content ').click()
 })
 
 Cypress.Commands.add('clickCreateTicketOnHome', () => {
@@ -122,14 +136,15 @@ Cypress.Commands.add('ticektCreationFormOnbehalf', () => {
 })
 
 Cypress.Commands.add('createTicketByDm', () => {
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__blocks > .p-autoclog__hook > [data-qa="message-text"] > [data-qa="block-kit-renderer"] > :nth-child(2) > [data-qa="bk_actions_block"] > .p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
+  cy.wait(2000)
+  cy.get('.p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
     .last()
     .click()
   cy.get('[data-qa="new-ticket-form_field-category-input"]').type(CategoryNameOnHD)
   cy.get('.p-block-kit-select_options').click();
   cy.get('[data-qa="wizard_modal_next"]').click();
   cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
-    jsonData.TicketMessage_ToValidateAssignee = ticketMessage
+    jsonData.TicketMessage_ForQuickActions = ticketMessage
     cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
   })
 })
@@ -204,7 +219,7 @@ Cypress.Commands.add('fetchLastTicketFromUser', () => {
 
 Cypress.Commands.add('fetchLastTicketFromAgent', () => {
 
-  cy.get('[data-qa="message_container"] > .c-message_kit__hover > .c-message_kit__actions > .c-message_kit__gutter > [data-qa="message_content"] > .c-message_kit__attachments > .p-autoclog__hook > .c-message_attachment_v2 > .c-message_attachment_v2__body > .c-message__message_blocks > [data-qa="block-kit-renderer"] > .p-block_kit_renderer__block_wrapper--first > [data-qa="bk_section_block"] > .p-section_block_text_content > .p-section_block__text > .c-message_attachment__text > .p-mrkdwn_element > [data-qa="bk_markdown_element"] > .c-link > b')
+  cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
     .last()
     .invoke('text')
