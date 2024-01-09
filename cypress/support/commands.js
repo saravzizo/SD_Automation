@@ -221,6 +221,10 @@ Cypress.Commands.add('fetchLastTicketFromAgent', () => {
 
   cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
+    .filter(
+      function (index, element) {
+        return Cypress.$(element).text().includes(ticketMessage)
+      })
     .last()
     .invoke('text')
     .then((text) => {
@@ -267,6 +271,10 @@ Cypress.Commands.add('fetchLastTicketInAgentOnbehalf', () => {
 Cypress.Commands.add('fetchLastTicketInUserOnbehalf', () => {
   cy.get('.c-message_attachment__text>>>>')
     .as('TicketID')
+    .filter(
+      function (index, element) {
+        return Cypress.$(element).text().includes(UserMessageToAgent)
+      })
     .last()
     .invoke('text')
     .then((text) => {

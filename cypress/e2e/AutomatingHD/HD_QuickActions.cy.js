@@ -24,6 +24,57 @@ describe('Ticket Creation', () => {
     })
 })
 
+// Perfroming Different Quick Actions for the Ticket Created
+// describe('Quick Actions', () => {
+
+//     it('Performing Different Quick Actions for the Ticket Created',() =>{
+//         cy.slackAgent();
+//         cy.visitSlack();
+//         cy.navigateToAssistAiInSlack();
+//         cy.clickMessageTabInSlack();
+//         cy.scrollEnd();
+//         cy.fetchLastTicketFromAgent();
+
+//         // Add Private Note - QuickAction
+//         cy.clickQuickActionButton();
+//         cy.addPrivateNote();
+//         cy.successMessageCheck("private")
+
+//         // Set Assignee - QuickAction
+//         cy.clickQuickActionButton();
+//         cy.setTicketAssignee();
+//         cy.successMessageCheck("Assign");
+
+//         // Change Category - QuickAction
+//         cy.clickQuickActionButton();
+//         cy.changeTicketCategory();
+//         cy.successMessageCheck("Category");
+
+//         // Change Status - QuickAction
+//         cy.clickQuickActionButton();
+//         cy.changeTicketStatus();
+//         cy.successMessageCheck("status")
+//     })
+// })
+
+// describe('Verify Quick Action changes in HelpDesk', () => {
+    
+//     it('Verify the Private Note in HelpDesk', () => {
+//         cy.HD_QuickActionsAssertion("private");
+//     })
+//     it('Verify the Category in HelpDesk', () => {
+//         cy.HD_QuickActionsAssertion("Category");
+//     })
+//     it('Verify the Ticket Assignee in HelpDesk', () => {
+//         cy.HD_QuickActionsAssertion("Assign");
+//     })
+//     it('Verify the Status in HelpDesk', () => {
+//         cy.HD_QuickActionsAssertion("status");
+//     })
+// })
+
+
+
 describe('Private Note - Quick Action', () => {
     it('Add Private Note for the ticket created', () => {
         cy.slackAgent();
@@ -96,6 +147,7 @@ describe('Ticket Status Change - Quick Action', () => {
         cy.HD_QuickActionsAssertion("status");
     })
 })
+
 
 
 

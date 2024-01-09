@@ -11,7 +11,7 @@ const randomPrivateMsg = faker.lorem.words(2)
 
 // Commands for Quick Actions
 Cypress.Commands.add('clickQuickActionButton', () => {
-  
+
   cy.get('.p-actions_block_elements > :nth-child(2) > [data-qa="bk_button-element"]')
     .last()
     .click();
@@ -74,69 +74,93 @@ Cypress.Commands.add('successMessageCheck', (input) => {
 
     let ticket = jsonData.HD_TicketIDFromUser;
     let AssigneeTicketMessage_Format = `A user was assigned to ticket ${ticket} successfully`
-    let CategoryTicketMessage_Format = `Ticket ${ticket}'s category was changed successfully` 
+    let CategoryTicketMessage_Format = `Ticket ${ticket}'s category was changed successfully`
     let TicketStatusMessage_Format = `Ticket ${ticket}'s status was changed successfully`
     let PrivateNoteMessage_Format = `A Private note was added to ticket ${ticket} successfully`
 
-    cy.get('.p-message_pane_message__message_label >>>>>>>>')
-      .invoke('text')
-      .then((text) => {
-        let SuccessMessage = text
-
-        if (input == "Assign")
-        {
+    if (input == "Assign"){
+      cy.get('.p-message_pane_message__message_label >>>>>>>>')
+        .filter(
+          function (index, element) {
+            return Cypress.$(element).text().includes(AssigneeTicketMessage_Format)
+          })
+        .invoke('text')
+        .then((text) => {
+          let SuccessMessage = text
           cy.wrap(SuccessMessage).should('eq', AssigneeTicketMessage_Format)
           jsonData.AssigneeSuccessMessage = AssigneeTicketMessage_Format
-        }
-        else if (input == "Category")
-        {
+        })
+
+    }
+    else if (input == "Category"){
+      cy.get('.p-message_pane_message__message_label >>>>>>>>')
+        .filter(
+          function (index, element) {
+            return Cypress.$(element).text().includes(CategoryTicketMessage_Format)
+          })
+        .invoke('text')
+        .then((text) => {
+          let SuccessMessage = text
           cy.wrap(SuccessMessage).should('eq', CategoryTicketMessage_Format)
           jsonData.CategorySuccessMessage = CategoryTicketMessage_Format
-        }
-        else if(input == "status")
-        {
+        })
+    }
+    else if (input == "status"){
+      cy.get('.p-message_pane_message__message_label >>>>>>>>')
+        .filter(
+          function (index, element) {
+            return Cypress.$(element).text().includes(TicketStatusMessage_Format)
+          })
+        .invoke('text')
+        .then((text) => {
+          let SuccessMessage = text
           cy.wrap(SuccessMessage).should('eq', TicketStatusMessage_Format)
           jsonData.TicketStatusSuccessMessage = TicketStatusMessage_Format
-        }   
-        else if(input =="private")
-        {
+        })
+    }
+    else if (input == "private"){
+      cy.get('.p-message_pane_message__message_label >>>>>>>>')
+        .filter(
+          function (index, element) {
+            return Cypress.$(element).text().includes(PrivateNoteMessage_Format)
+          })
+        .invoke('text')
+        .then((text) => {
+          let SuccessMessage = text
           cy.wrap(SuccessMessage).should('eq', PrivateNoteMessage_Format)
           jsonData.PrivateNoteSuccessMessage = PrivateNoteMessage_Format
-        }
-        cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
-      })
-  })  
+        })
+    }
+    cy.writeFile('cypress/fixtures/outputFile.json', jsonData);
+
+  })
 })
 
 
 // Asserting the changes on HelpDesk
 Cypress.Commands.add('HD_QuickActionsAssertion', (input) => {
-  cy.HD_Login();
-  cy.visit(Cypress.env('HD_LINK'))
-  cy.get('[title="All Tickets"]').click()
-
-  cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
+   
+    cy.HD_Login();
+    cy.visit(Cypress.env('HD_LINK'))
+    cy.get('[title="All Tickets"]').click()
+    cy.readFile('cypress/fixtures/outputFile.json').then((jsonData) => {
     let ticketMessage = jsonData.TicketMessage_ForQuickActions;
     let privatemsg = jsonData.PrivateMessage
     cy.contains(ticketMessage).click()
 
-    if (input == "Assign")
-    {
+    if (input == "Assign") {
       cy.get('.hf-ticket-action_value').contains(TicketAssignee).should('be.visible')
     }
-    else if (input == "Category")
-    {
+    else if (input == "Category") {
       cy.get('.hf-ticket-action_value').contains(category).should('be.visible')
     }
-    else if(input == "private")
-    {
-      cy.get('.hf-update-box > .hf-update-box_body > div').contains(privatemsg).should('be.visible')
+    else if (input == "private") {
+      cy.get(' .hf-update-box > .hf-update-box_header > .hf-update-box_header_summary').contains(privatemsg).should('be.visible')
     }
-    else if(input =="status")
-    {
+    else if (input == "status") {
       cy.get('.hf-ticket-status').contains(ticketStatus).should('be.visible')
     }
 
-    })
+  })
 })
 
